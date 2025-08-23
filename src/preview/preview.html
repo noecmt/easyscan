@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aperçu du Scan - Easy Scan</title>
+    <link rel="stylesheet" href="preview.css">
+</head>
+<body>
+    <div class="header">
+        <div class="title">
+            <span class="icon">🖨️</span>
+            <h1>Easy Scan - Aperçu</h1>
+        </div>
+        <div class="info" id="scanInfo">
+            <span id="scanDate"></span>
+            <span id="scanFormat"></span>
+            <span id="scanSize"></span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="preview-area">
+            <div class="preview-wrapper" id="previewWrapper">
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Chargement du scan...</p>
+                </div>
+                
+                <div class="preview-content" id="previewContent" style="display: none;">
+                    <img id="previewImage" alt="Aperçu du scan" />
+                    <div class="pdf-preview" id="pdfPreview" style="display: none;">
+                        <div class="pdf-icon">📄</div>
+                        <p>Document PDF</p>
+                        <button id="openPdfBtn" class="btn btn-primary">Ouvrir le PDF</button>
+                    </div>
+                </div>
+
+                <div class="no-scan" id="noScanMessage" style="display: none;">
+                    <div class="no-scan-icon">📭</div>
+                    <h3>Aucun scan disponible</h3>
+                    <p>Retournez au popup pour effectuer un nouveau scan</p>
+                    <button id="backToPopupBtn" class="btn btn-secondary">Retour au scanner</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions-panel">
+            <div class="actions-group">
+                <h3>Actions</h3>
+                <div class="buttons">
+                    <button id="saveBtn" class="btn btn-success" title="Télécharger le scan">
+                        <span class="btn-icon">💾</span>
+                        Enregistrer
+                    </button>
+                    
+                    <button id="copyBtn" class="btn btn-info" title="Copier dans le presse-papiers">
+                        <span class="btn-icon">📋</span>
+                        Copier
+                    </button>
+                    
+                    <button id="printBtn" class="btn btn-primary" title="Imprimer le document">
+                        <span class="btn-icon">🖨️</span>
+                        Imprimer
+                    </button>
+                </div>
+            </div>
+
+            <div class="actions-group">
+                <h3>Navigation</h3>
+                <div class="buttons">
+                    <button id="newScanBtn" class="btn btn-secondary" title="Effectuer un nouveau scan">
+                        <span class="btn-icon">🔄</span>
+                        Nouveau scan
+                    </button>
+                    
+                    <button id="closeBtn" class="btn btn-outline" title="Fermer cette fenêtre">
+                        <span class="btn-icon">❌</span>
+                        Fermer
+                    </button>
+                </div>
+            </div>
+
+            <div class="scan-history">
+                <h3>Historique</h3>
+                <div id="historyList" class="history-list">
+                    <!-- L'historique sera chargé dynamiquement -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Extension Easy Scan - Scan réseau direct depuis Chrome</p>
+    </div>
+
+    <!-- Messages toast -->
+    <div id="toast" class="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="preview.js"></script>
+</body>
+</html>

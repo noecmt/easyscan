@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Easy Scan - Options</title>
+  <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+  <div class="options-container">
+    <h1>Easy Scan - Options</h1>html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>eSCL Scanner - Options</title>
+  <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+  <div class="container options-container">
+    <h1>eSCL Scanner - Options</h1>
+    
+    <section class="options-section">
+      <h2>Paramètres par défaut</h2>
+      
+      <div class="field">
+        <label for="defaultDpi">Résolution par défaut:</label>
+        <select id="defaultDpi">
+          <option value="150">150 DPI (rapide)</option>
+          <option value="300" selected>300 DPI (standard)</option>
+          <option value="600">600 DPI (haute qualité)</option>
+        </select>
+      </div>
+      
+      <div class="field">
+        <label for="defaultColorMode">Mode couleur par défaut:</label>
+        <select id="defaultColorMode">
+          <option value="RGB24" selected>Couleur</option>
+          <option value="Grayscale8">Niveaux de gris</option>
+          <option value="BlackAndWhite1">Noir et blanc</option>
+        </select>
+      </div>
+      
+      <div class="field">
+        <label for="defaultFormat">Format par défaut:</label>
+        <select id="defaultFormat">
+          <option value="jpeg" selected>JPEG (recommandé)</option>
+          <option value="png">PNG</option>
+          <option value="pdf">PDF</option>
+        </select>
+      </div>
+    </section>
+    
+    <section class="options-section">
+      <h2>Scanner par défaut</h2>
+      
+      <div class="field">
+        <label for="defaultScanner">Scanner configuré:</label>
+        <div class="scanner-controls">
+          <input type="text" id="defaultScanner" placeholder="Aucun scanner configuré" readonly />
+          <button id="discoverScannersBtn" class="discover-button">🔍 Découvrir</button>
+        </div>
+      </div>
+      
+      <select id="discoveredScanners" class="hidden">
+        <option value="">Sélectionner un scanner...</option>
+      </select>
+      
+      <div class="scanner-actions hidden" id="scannerActions">
+        <button id="testScannerBtn" class="test-button">🔗 Tester la connexion</button>
+        <button id="clearScannerBtn" class="clear-button">❌ Effacer</button>
+      </div>
+      
+      <div id="scannerStatus" class="status"></div>
+    </section>
+    
+    <section class="options-section">
+      <h2>Actions</h2>
+      <button id="saveBtn" class="save-button">💾 Sauvegarder les paramètres</button>
+      <button id="resetBtn" class="reset-button">🔄 Réinitialiser</button>
+      
+      <div id="optionsStatus" class="status"></div>
+    </section>
+    
+    <section class="options-section">
+      <h2>À propos</h2>
+      <p><strong>eSCL Network Scanner v1.2.0</strong></p>
+      <p>Extension Chrome pour scanner via eSCL/AirScan</p>
+      <p>Optimisé pour HP ENVY Inspire 7200e et scanners compatibles</p>
+      <p>Découverte automatique • Interface compacte • Scan ultra-rapide</p>
+    </section>
+  </div>
+  
+  <script type="module" src="options.js"></script>
+</body>
+</html>
