@@ -7,7 +7,6 @@ class PreviewManager {
     }
 
     async init() {
-        console.log('🎬 Initialisation de la page preview');
         await this.loadElements();
         await this.setupEventListeners();
         await this.loadCurrentScan();
@@ -47,6 +46,10 @@ class PreviewManager {
             toast: document.getElementById('toast'),
             toastMessage: document.getElementById('toastMessage')
         };
+        
+        // Références aux groupes d'actions pour pouvoir les cacher/montrer
+        this.actionsGroup = document.querySelector('.actions-group');
+        this.navigationGroup = document.querySelector('.actions-group:nth-child(2)');
     }
 
     setupEventListeners() {
@@ -65,30 +68,25 @@ class PreviewManager {
         
         // Preview image click
         this.elements.previewImage.addEventListener('click', () => this.openFullscreen());
-        
-        console.log('✅ Event listeners configurés');
     }
 
     async loadCurrentScan() {
         try {
-            console.log('📄 Chargement du scan actuel...');
-            
             // Récupérer depuis le storage local
             const result = await chrome.storage.local.get(['currentScan', 'lastScanData']);
             
             if (result.currentScan || result.lastScanData) {
                 const scanData = result.currentScan || result.lastScanData;
-                console.log('✅ Scan trouvé:', {
-                    mimeType: scanData.mimeType,
-                    size: scanData.data ? `${Math.round(scanData.data.length / 1024)} KB` : 'N/A',
-                    timestamp: scanData.timestamp
-                });
                 
-                this.currentScan = scanData;
-                this.displayScan(scanData);
-                this.updateScanInfo(scanData);
+                // Vérifier que les données sont valides
+                if (scanData && scanData.data && scanData.mimeType) {
+                    this.currentScan = scanData;
+                    this.displayScan(scanData);
+                    this.updateScanInfo(scanData);
+                } else {
+                    this.showNoScanMessage();
+                }
             } else {
-                console.log('❌ Aucun scan trouvé');
                 this.showNoScanMessage();
             }
         } catch (error) {
@@ -109,6 +107,9 @@ class PreviewManager {
         // Masquer le message "pas de scan"
         this.elements.noScanMessage.style.display = 'none';
         this.elements.previewContent.style.display = 'flex';
+        
+        // Restaurer l'affichage normal des actions
+        this.showActionsPanel();
 
         if (mimeType === 'application/pdf') {
             // Affichage PDF
@@ -171,29 +172,93 @@ class PreviewManager {
         this.scanHistory.slice(-5).reverse().forEach((scan, index) => {
             const item = document.createElement('div');
             item.className = 'history-item';
-            if (index === 0) item.classList.add('active');
+            
+            // Marquer comme actif si c'est le scan actuellement affiché
+            if (this.currentScan && scan.timestamp === this.currentScan.timestamp) {
+                item.classList.add('active');
+            } else if (!this.currentScan && index === 0) {
+                // Si aucun scan spécifique n'est sélectionné, le premier par défaut
+                item.classList.add('active');
+            }
             
             const date = new Date(scan.timestamp);
             const formatText = scan.mimeType === 'application/pdf' ? 'PDF' : 'IMG';
             
             item.innerHTML = `
                 <span>📄</span>
-                <div>
+                <div style="flex: 1;">
                     <div style="font-weight: 500;">${formatText}</div>
                     <div style="font-size: 0.7rem; opacity: 0.8;">${date.toLocaleDateString()}</div>
                 </div>
+                <button class="delete-btn" title="Supprimer ce scan">×</button>
             `;
             
-            item.addEventListener('click', () => {
+            // Gestionnaire de clic pour sélectionner l'item
+            item.addEventListener('click', (e) => {
+                // Éviter la sélection si on clique sur le bouton de suppression
+                if (e.target.classList.contains('delete-btn')) {
+                    return;
+                }
+                
+                // Retirer la classe active de tous les éléments
+                document.querySelectorAll('.history-item').forEach(el => el.classList.remove('active'));
+                // Ajouter la classe active à l'élément cliqué
+                item.classList.add('active');
+                
                 this.loadHistoryItem(scan);
-                this.renderHistory(); // Refresh pour mettre à jour l'état actif
+            });
+            
+            // Gestionnaire de clic pour le bouton de suppression
+            const deleteBtn = item.querySelector('.delete-btn');
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Empêcher la sélection de l'item
+                this.deleteScanFromHistory(scan);
             });
             
             historyContainer.appendChild(item);
         });
     }
 
+    async deleteScanFromHistory(scanToDelete) {
+        try {
+            // Supprimer le scan de l'historique local
+            this.scanHistory = this.scanHistory.filter(scan => scan.timestamp !== scanToDelete.timestamp);
+            
+            // Mettre à jour le stockage
+            await chrome.storage.local.set({ scanHistory: this.scanHistory });
+            
+            // Si le scan supprimé était celui actuellement affiché
+            if (this.currentScan && this.currentScan.timestamp === scanToDelete.timestamp) {
+                // Charger le scan le plus récent s'il y en a un
+                if (this.scanHistory.length > 0) {
+                    const mostRecent = this.scanHistory[this.scanHistory.length - 1];
+                    this.loadHistoryItem(mostRecent);
+                } else {
+                    // Aucun scan restant, afficher le message "aucun scan"
+                    this.currentScan = null;
+                    this.showNoScanMessage();
+                }
+            }
+            
+            // Rafraîchir l'affichage de l'historique
+            this.renderHistory();
+            
+            // Afficher un message de confirmation discret
+            this.showToast('Scan supprimé de l\'historique', 'success');
+            
+        } catch (error) {
+            console.error('Erreur lors de la suppression du scan:', error);
+            this.showToast('Erreur lors de la suppression', 'error');
+        }
+    }
+
     async loadHistoryItem(scanData) {
+        // Vérifier que les données sont valides
+        if (!scanData || !scanData.data || !scanData.mimeType) {
+            this.showNoScanMessage();
+            return;
+        }
+        
         this.currentScan = scanData;
         this.displayScan(scanData);
         this.updateScanInfo(scanData);
@@ -223,7 +288,6 @@ class PreviewManager {
             link.click();
             
             this.showSuccess(`Scan téléchargé: ${filename}`);
-            console.log('✅ Téléchargement initié:', filename);
         } catch (error) {
             console.error('❌ Erreur lors du téléchargement:', error);
             this.showError('Erreur lors du téléchargement');
@@ -257,7 +321,6 @@ class PreviewManager {
                 this.showSuccess('Image copiée dans le presse-papiers');
             }
             
-            console.log('✅ Copie réussie');
         } catch (error) {
             console.error('❌ Erreur lors de la copie:', error);
             this.showError('Erreur lors de la copie');
@@ -307,7 +370,6 @@ class PreviewManager {
             }
             
             this.showSuccess('Impression lancée');
-            console.log('✅ Impression initiée');
         } catch (error) {
             console.error('❌ Erreur lors de l\'impression:', error);
             this.showError('Erreur lors de l\'impression');
@@ -343,10 +405,61 @@ class PreviewManager {
         this.elements.printBtn.disabled = true;
     }
 
+    enableActionButtons() {
+        this.elements.saveBtn.disabled = false;
+        this.elements.copyBtn.disabled = false;
+        this.elements.printBtn.disabled = false;
+    }
+
+    showActionsPanel() {
+        // Réafficher la section Actions
+        if (this.actionsGroup) {
+            this.actionsGroup.style.display = 'block';
+        }
+        
+        // Restaurer le titre normal de la section Navigation
+        if (this.navigationGroup) {
+            const navigationTitle = this.navigationGroup.querySelector('h3');
+            if (navigationTitle) {
+                navigationTitle.textContent = 'Navigation';
+            }
+        }
+        
+        // Réactiver les boutons
+        this.enableActionButtons();
+    }
+
     showNoScanMessage() {
+        // Nettoyer les données en mémoire
+        this.currentScan = null;
+        
+        // Nettoyer le storage aussi
+        this.clearScanStorage();
+        
         this.elements.previewContent.style.display = 'none';
         this.elements.noScanMessage.style.display = 'flex';
         this.disableActionButtons();
+        
+        // Cacher la section Actions complètement
+        if (this.actionsGroup) {
+            this.actionsGroup.style.display = 'none';
+        }
+        
+        // Modifier le titre de la section Navigation
+        if (this.navigationGroup) {
+            const navigationTitle = this.navigationGroup.querySelector('h3');
+            if (navigationTitle) {
+                navigationTitle.textContent = 'Aucun scan disponible';
+            }
+        }
+    }
+    
+    async clearScanStorage() {
+        try {
+            await chrome.storage.local.remove(['currentScan', 'lastScanData']);
+        } catch (error) {
+            console.error('❌ Erreur lors du nettoyage du storage:', error);
+        }
     }
 
     hideLoading() {

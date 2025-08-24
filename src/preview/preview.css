@@ -172,18 +172,64 @@ body {
 
 /* No scan message */
 .no-scan {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     color: var(--secondary-color);
+    padding: 2rem;
+    gap: 1rem;
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .no-scan-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
+    font-size: 5rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.6;
 }
 
 .no-scan h3 {
-    margin-bottom: 0.5rem;
+    margin: 0 0 0.5rem 0;
     color: var(--dark-text);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.no-scan p {
+    margin: 0 0 1.5rem 0;
+    color: var(--secondary-color);
+    font-size: 1rem;
+    line-height: 1.5;
+    max-width: 400px;
+}
+
+.no-scan .btn {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.no-scan .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 /* Panel d'actions */
@@ -293,11 +339,43 @@ body {
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem;
+    padding-right: 2rem; /* Espace pour le bouton de suppression */
     background: var(--light-bg);
+    border: 2px solid transparent;
     border-radius: 4px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
     font-size: 0.8rem;
+    position: relative;
+}
+
+.history-item .delete-btn {
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 0.7rem;
+    color: white;
+    opacity: 0;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.history-item.active .delete-btn {
+    opacity: 1;
+}
+
+.history-item .delete-btn:hover {
+    background: rgba(220, 53, 69, 0.8);
+    transform: translateY(-50%) scale(1.1);
 }
 
 .history-item:hover {
@@ -307,6 +385,8 @@ body {
 .history-item.active {
     background: var(--primary-color);
     color: white;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 2px 4px rgba(0, 122, 204, 0.3);
 }
 
 /* Footer */

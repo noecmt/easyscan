@@ -184,7 +184,6 @@ export async function createScanJob(baseUrl, settings) {
         if (attempt === maxRetries) {
           throw new Error('Scanner occupé ou indisponible. Essayez dans quelques instants.');
         }
-        console.log(`Tentative ${attempt}/${maxRetries}: Scanner occupé, retry dans ${retryDelay}ms...`);
         await new Promise(resolve => setTimeout(resolve, retryDelay));
         continue;
       }
@@ -193,7 +192,6 @@ export async function createScanJob(baseUrl, settings) {
         if (attempt === maxRetries) {
           throw new Error('Conflit de ressource. Un autre scan est en cours.');
         }
-        console.log(`Tentative ${attempt}/${maxRetries}: Conflit, retry dans ${retryDelay}ms...`);
         await new Promise(resolve => setTimeout(resolve, retryDelay));
         continue;
       }
@@ -207,7 +205,6 @@ export async function createScanJob(baseUrl, settings) {
       }
       
       if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
-        console.log(`Tentative ${attempt}/${maxRetries}: Erreur réseau, retry dans ${retryDelay}ms...`);
         await new Promise(resolve => setTimeout(resolve, retryDelay));
         continue;
       }
@@ -223,14 +220,74 @@ export async function createScanJob(baseUrl, settings) {
  */
 export async function fetchScannedImage(baseUrl, jobInfo, format) {
   const docUrl = jobInfo.jobUrl + '/NextDocument';
+  
+  // Attendre que le scan soit terminé avant d'essayer de récupérer l'image
+  await waitForScanCompletion(baseUrl, jobInfo.jobUrl);
+  
   const res = await fetch(docUrl, { method: 'GET' });
-  if (!res.ok) throw new Error('Récupération image échouée: ' + res.status);
+  
+  if (!res.ok) {
+    // Si 410, le job a expiré - donner des détails utiles
+    if (res.status === 410) {
+      throw new Error('Le job de scan a expiré. Le scanner a peut-être pris trop de temps ou s\'est mis en veille.');
+    }
+    
+    throw new Error('Récupération image échouée: ' + res.status);
+  }
   
   const blob = await res.blob();
   const mimeType = blob.type || (format === 'png' ? 'image/png' : (format === 'pdf' ? 'application/pdf' : 'image/jpeg'));
   const dataUrl = await blobToDataUrl(blob);
   const arrayBuffer = await blob.arrayBuffer();
   return { mimeType, dataUrl, bytes: new Uint8Array(arrayBuffer) };
+}
+
+/**
+ * Attend que le scan soit terminé en vérifiant le statut du job
+ */
+async function waitForScanCompletion(baseUrl, jobUrl) {
+  const maxWaitTime = 30000; // 30 secondes max
+  const checkInterval = 1000; // Vérifier chaque seconde
+  const startTime = Date.now();
+  
+  while (Date.now() - startTime < maxWaitTime) {
+    try {
+      // Vérifier le statut du job
+      const statusRes = await fetch(jobUrl, { method: 'GET' });
+      
+      if (!statusRes.ok) {
+        break;
+      }
+      
+      const statusXml = await statusRes.text();
+      
+      // Chercher l'état du job dans le XML
+      const stateMatch = statusXml.match(/<scan:JobState>([^<]+)<\/scan:JobState>/);
+      const state = stateMatch ? stateMatch[1] : null;
+      
+      if (state === 'Completed') {
+        return;
+      }
+      
+      if (state === 'Aborted' || state === 'Canceled') {
+        throw new Error('Le scan a été annulé par le scanner');
+      }
+      
+      // Si en cours, attendre un peu plus
+      if (state === 'Processing' || state === 'Pending') {
+        await new Promise(resolve => setTimeout(resolve, checkInterval));
+        continue;
+      }
+      
+      // État inconnu, attendre un peu et continuer
+      await new Promise(resolve => setTimeout(resolve, checkInterval));
+      
+    } catch (e) {
+      // En cas d'erreur, attendre un délai fixe et continuer
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      break;
+    }
+  }
 }
 
 // ---- Fonctions utilitaires ----

@@ -40,13 +40,12 @@ export async function discoverScanners(candidates) {
     
     // Arrêt anticipé si on trouve des scanners dans les premiers batchs (scan rapide)
     if (discovered.length > 0 && candidates.length <= 50) {
-      console.log(`Scan rapide: trouvé ${discovered.length} scanner(s), arrêt anticipé`);
       break;
     }
     
     // Pour les scans complets, continuer mais afficher le progrès
     if (candidates.length > 50 && (i + batchSize) % 100 === 0) {
-      console.log(`Scan en cours: ${i + batchSize}/${candidates.length} IPs testées, ${discovered.length} scanner(s) trouvé(s)`);
+      // Progression en cours
     }
   }
   

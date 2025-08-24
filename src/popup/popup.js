@@ -34,8 +34,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   if (missingElements.length > 0) {
     console.error('Éléments DOM manquants:', missingElements);
-  } else {
-    console.log('Tous les éléments DOM trouvés');
   }
   
   loadSettings();
@@ -136,7 +134,6 @@ async function autoDiscoverScanners() {
       setStatus('Aucun scanner trouvé - cliquez sur Découvrir pour scan étendu', 'info');
     }
   } catch (error) {
-    console.log('Découverte automatique échouée:', error.message);
     setStatus('Cliquez sur Découvrir pour rechercher des scanners', 'info');
   }
 }
@@ -162,13 +159,6 @@ async function handleScan() {
     
     if (response.ok) {
       setStatus(`Scan réussi ! Paramètres utilisés: ${response.variantUsed.colorMode}, ${response.variantUsed.dpi}DPI`, 'success');
-      console.log('Scan response:', response);
-      console.log('Image data:', {
-        hasImage: !!response.image,
-        mimeType: response.image?.mimeType,
-        dataUrlStart: response.image?.dataUrl?.substring(0, 50),
-        dataUrlLength: response.image?.dataUrl?.length
-      });
       showPreview(response.image?.dataUrl, response.image?.mimeType);
     } else {
       setStatus(`Erreur: ${response.error}`, 'error');
@@ -265,7 +255,6 @@ async function handleDebugXML() {
     });
     
     if (response.ok) {
-      console.log('XML généré:', response.xml);
       setStatus('XML affiché dans la console (F12)', 'info');
     } else {
       setStatus(`Erreur debug: ${response.error}`, 'error');
@@ -342,7 +331,7 @@ async function loadSettings() {
     if (stored.colorMode) elements.colorMode.value = stored.colorMode;
     if (stored.format) elements.format.value = stored.format;
   } catch (error) {
-    console.warn('Erreur chargement paramètres:', error);
+    // Paramètres non chargés - utiliser les valeurs par défaut
   }
 }
 
@@ -352,8 +341,6 @@ function setStatus(message, type = '') {
 }
 
 async function showPreview(dataUrl, mimeType) {
-  console.log('showPreview called with:', { mimeType, dataUrlLength: dataUrl?.length });
-  
   if (!elements.previewImg) {
     console.error('previewImg element not found!');
     return;
@@ -391,7 +378,6 @@ async function showPreview(dataUrl, mimeType) {
       
       await chrome.storage.local.set({ scanHistory: history });
       
-      console.log('✅ Scan sauvegardé dans le storage local');
     } catch (error) {
       console.error('❌ Erreur lors de la sauvegarde:', error);
     }
@@ -405,7 +391,6 @@ async function showPreview(dataUrl, mimeType) {
       elements.previewImg.style.cursor = 'pointer';
       elements.previewImg.title = 'Cliquer pour ouvrir en grand';
       
-      console.log('Image preview shown successfully');
     }
     // Pour les PDF : afficher une icône de prévisualisation
     else if (mimeType && mimeType === 'application/pdf') {
@@ -430,11 +415,9 @@ async function showPreview(dataUrl, mimeType) {
       elements.previewImg.dataset.originalData = dataUrl;
       elements.previewImg.dataset.originalMime = mimeType;
       
-      console.log('PDF preview shown successfully');
     }
     // Autres formats : essayer quand même d'afficher
     else {
-      console.warn('Format non standard:', mimeType, 'mais tentative d\'affichage');
       elements.previewImg.src = dataUrl;
       elements.previewImg.classList.remove('hidden');
       elements.downloadActions.classList.remove('hidden');
@@ -443,7 +426,6 @@ async function showPreview(dataUrl, mimeType) {
       elements.previewImg.title = 'Cliquer pour ouvrir';
     }
   } else {
-    console.warn('Pas de dataUrl fourni');
     hidePreview();
   }
 }
@@ -456,23 +438,15 @@ function hidePreview() {
 }
 
 function openImageInNewTab() {
-  console.log('🖱️ Ouverture de la page preview...');
-  
   // Ouvrir la page preview dédiée
   const previewUrl = chrome.runtime.getURL('src/preview/preview.html');
-  chrome.tabs.create({ url: previewUrl }, (tab) => {
-    console.log('✅ Page preview ouverte:', tab.id);
-  });
+  chrome.tabs.create({ url: previewUrl });
 }
 
 function openPreviewPage() {
-  console.log('👁️ Ouverture de la page preview depuis le bouton...');
-  
   // Ouvrir la page preview dédiée
   const previewUrl = chrome.runtime.getURL('src/preview/preview.html');
-  chrome.tabs.create({ url: previewUrl }, (tab) => {
-    console.log('✅ Page preview ouverte:', tab.id);
-  });
+  chrome.tabs.create({ url: previewUrl });
 }
 
 async function sendMessage(message) {

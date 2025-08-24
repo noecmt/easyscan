@@ -17,19 +17,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           const { printerUrl, settings } = payload;
           
           // Warm-up du scanner pour éviter les erreurs 403
-          console.log('🔥 Warm-up du scanner...');
           await warmUpScanner(printerUrl);
           
           const capabilities = await getCapabilities(printerUrl);
           const adjusted = adjustSettingsForCapabilities(settings, capabilities);
           const jobInfo = await createScanJob(printerUrl, adjusted);
           const image = await fetchScannedImage(printerUrl, jobInfo, adjusted.format);
-          
-          console.log('Image fetched:', {
-            mimeType: image.mimeType,
-            dataUrlLength: image.dataUrl?.length,
-            dataUrlStart: image.dataUrl?.substring(0, 50)
-          });
           
           lastScan = image;
           sendResponse({ 
@@ -95,8 +88,20 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           sendResponse({ ok: false, error: 'Type de message inconnu' });
       }
     } catch (e) {
-      console.error('[SCAN ERROR]', e);
-      sendResponse({ ok: false, error: e.message });
+      // Gestion spécialisée des erreurs
+      let userMessage = e.message;
+      
+      if (e.message.includes('410')) {
+        userMessage = 'Le scanner a annulé le job. Vérifiez que le scanner est prêt et réessayez.';
+      } else if (e.message.includes('403')) {
+        userMessage = 'Scanner occupé. Attendez quelques secondes et réessayez.';
+      } else if (e.message.includes('409')) {
+        userMessage = 'Un autre scan est en cours. Attendez la fin et réessayez.';
+      } else if (e.message.includes('Failed to fetch')) {
+        userMessage = 'Impossible de joindre le scanner. Vérifiez l\'adresse IP.';
+      }
+      
+      sendResponse({ ok: false, error: userMessage });
     }
   })();
   
