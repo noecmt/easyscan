@@ -11,7 +11,7 @@
     "@preact/preset-vite": "^2.10.5",
     "@types/chrome": "^0.1.42",
     "typescript": "^6.0.3",
-    "vite": "^4.4.9"
+    "vite": "^8.0.13"
   },
   "dependencies": {
     "preact": "^10.29.1",
