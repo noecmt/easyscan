@@ -15,13 +15,13 @@ npm run build
 npm run dev
 ```
 
-**Loading the extension in Chrome (development):**
-1. Go to `chrome://extensions/`
-2. Enable Developer mode
-3. Click "Load unpacked" and select this `extension/` folder (not `dist/`)
+**Loading the extension in Chrome:**
+1. Run `npm run build`
+2. Go to `chrome://extensions/`
+3. Enable Developer mode
+4. Click "Load unpacked" and select the `dist/` folder
 
-**Loading the built extension:**
-After `npm run build`, load the `dist/` folder instead.
+> The `manifest.json` now lives in `src/` and is copied to `dist/` at build time — always load `dist/`, never the raw `extension/` folder.
 
 ## Architecture
 
@@ -60,7 +60,13 @@ The background worker also keeps `lastScan` in memory for the current session.
 
 ### Build
 
-Vite bundles the extension. Entry points in `vite.config.js` cover background, popup, options, preview, and the two core modules. The Vite plugin copies `manifest.json` and `icons/` into `dist/` after bundling. The `dist/` folder is gitignored.
+Vite bundles the extension (`vite.config.ts`). Entry points cover background, popup, options, and preview HTML. The Vite plugin copies `src/manifest.json` and `icons/` into `dist/` after bundling. The `dist/` folder is gitignored.
+
+New files added in this step:
+- `tsconfig.json` — TypeScript config targeting ES2020, Preact JSX
+- `src/core/types.ts` — shared types (ColorMode, ScanFormat, DPI, ScanSettings, etc.)
+- `src/manifest.json` — manifest source (replaces root-level manifest.json)
+- All page HTML files renamed from `*.html` → `index.html`
 
 ### eSCL protocol notes
 

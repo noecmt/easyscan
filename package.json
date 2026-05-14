@@ -1,0 +1,20 @@
+{
+  "name": "easy-scan-extension",
+  "version": "1.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.5",
+    "@types/chrome": "^0.1.42",
+    "typescript": "^6.0.3",
+    "vite": "^4.4.9"
+  },
+  "dependencies": {
+    "preact": "^10.29.1",
+    "webext-storage": "^3.1.0"
+  }
+}
