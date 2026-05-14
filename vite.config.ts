@@ -17,12 +17,15 @@ export default defineConfig({
       }
     }
   ],
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        background: resolve(__dirname, 'src/background.js'),
+        background: resolve(__dirname, 'src/background.ts'),
         popup: resolve(__dirname, 'src/popup/index.html'),
         options: resolve(__dirname, 'src/options/index.html'),
         preview: resolve(__dirname, 'src/preview/index.html'),

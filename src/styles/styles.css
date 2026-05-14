@@ -425,6 +425,48 @@ button:disabled {
   animation: fadeIn 0.15s ease;
 }
 
+/* ── Composants Preact popup ─────────────────────────────────── */
+
+.scanner-selector {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.scanner-selector select {
+  flex: 1;
+}
+
+.icon-btn {
+  width: 28px;
+  height: 28px;
+  padding: 2px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.preview-panel {
+  margin-top: 4px;
+}
+
+.pdf-icon {
+  display: inline-block;
+  padding: 12px 20px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: #fff5f5;
+  color: var(--error-color);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.pdf-icon:hover {
+  background: #fdecea;
+}
+
 /* ── Scanner list (options page) ─────────────────────────────── */
 
 #scanner-list {

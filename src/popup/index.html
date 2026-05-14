@@ -1,74 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Easy Scan</title>
-  <link rel="stylesheet" href="../styles/styles.css">
-  <script type="module" src="popup.js"></script>
+  <link rel="stylesheet" href="../styles/styles.css" />
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>Easy Scan</h1>
-      <button id="optionsBtn" class="options-btn" title="Options">⚙️</button>
-    </div>
-
-    <!-- Configuration compacte -->
-    <section class="main-section">
-      <div class="field-group">
-        <div class="field">
-          <label for="scannerIP">Scanner:</label>
-          <input type="text" id="scannerIP" placeholder="192.168.1.100" />
-        </div>
-        <button id="discoverBtn" class="discover-btn" title="Rechercher scanners réseau">🔍</button>
-      </div>
-
-      <select id="discoveredSelect" class="hidden">
-        <option value="">Sélectionner un scanner découvert...</option>
-      </select>
-
-      <div class="controls-row">
-        <select id="dpi" title="Résolution">
-          <option value="150">150 DPI</option>
-          <option value="300" selected>300 DPI</option>
-          <option value="600">600 DPI</option>
-          <option value="1200">1200 DPI</option>
-        </select>
-
-        <select id="colorMode" title="Mode couleur">
-          <option value="RGB24" selected>Couleur</option>
-          <option value="Grayscale8">Gris</option>
-          <option value="BlackAndWhite1">N&B</option>
-        </select>
-
-        <select id="format" title="Format">
-          <option value="jpeg" selected>JPEG</option>
-          <option value="png">PNG</option>
-          <option value="pdf">PDF</option>
-        </select>
-      </div>
-
-      <div class="action-row">
-        <button id="connectivityBtn" class="test-btn">Test</button>
-        <button id="previewPageBtn" class="preview-page-btn" title="Ouvrir la page d'aperçu">👁️</button>
-        <button id="scanBtn" class="scan-button">🖨️ Scanner</button>
-      </div>
-    </section>
-
-    <!-- Résultat compact -->
-    <section class="result-section">
-      <div id="status" class="status"></div>
-
-      <div class="preview-container">
-        <img id="previewImg" class="preview-image hidden" alt="Aperçu" />
-      </div>
-
-      <div class="download-actions hidden" id="downloadActions">
-        <button id="copyBtn" title="Copier">📋</button>
-        <button id="downloadBtn" title="Télécharger">💾</button>
-        <button id="previewBtn" title="Aperçu complet">👁️</button>
-      </div>
-    </section>
-  </div>
+  <div id="app"></div>
+  <script type="module" src="./main.tsx"></script>
 </body>
 </html>
