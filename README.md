@@ -16,27 +16,28 @@ Scan documents wirelessly from Chrome via eSCL/AirScan. No driver, no software. 
 
 ## Compatible scanners
 
-Any scanner or all-in-one printer that supports eSCL/AirScan:
+Easy Scan requires the **eSCL/AirScan protocol** — a wireless scanning standard built into most printers released after 2017.
 
-- HP OfficeJet, DeskJet, ENVY, LaserJet series
-- Epson EcoTank, WorkForce, Expression series
-- Canon PIXMA, imageCLASS series
-- Brother MFC series
+- HP: OfficeJet, DeskJet, ENVY, LaserJet, Smart Tank series
+- Epson: EcoTank, WorkForce, Expression, SureColor series
+- Canon: PIXMA, imageCLASS, MAXIFY series
+
+> **AirPrint ≠ AirScan.** AirPrint (printing) and AirScan (scanning) are separate features. A printer that supports AirPrint may not support AirScan. Always check for explicit "AirScan" or "eSCL" support in your printer's specifications.
+>
+> **Quick compatibility check:** open `http://<printer-ip>/eSCL/ScannerStatus` in your browser. An XML response means your printer is compatible. An error means it's not.
 
 ## Installation (development)
-
-1. Clone this repo
-2. Open `chrome://extensions/`
-3. Enable **Developer mode**
-4. Click **Load unpacked** and select the `extension/` folder
-
-No build step required for development. To load a production build:
 
 ```bash
 npm install
 npm run build
-# then load the dist/ folder instead
 ```
+
+1. Open `chrome://extensions/`
+2. Enable **Developer mode**
+3. Click **Load unpacked** and select the `dist/` folder
+
+> Always load `dist/`, not the raw `extension/` folder — the project uses Vite and requires a build step.
 
 ## Architecture
 
@@ -49,8 +50,10 @@ popup.js  ──sendMessage──►  background.js  ──►  core/escl.js
 
 | Module | Role |
 |---|---|
-| `src/core/escl.js` | eSCL protocol: builds scan job XML, creates jobs, polls status, fetches images |
-| `src/core/discovery.js` | Scans candidate IPs in parallel batches to find scanners on the network |
+| `src/core/escl.ts` | eSCL protocol (TypeScript): typed API, `ScannerError` class, retry logic, XML builder |
+| `src/core/escl.js` | eSCL protocol (legacy JS) — used by `background.js` until migration to `background.ts` |
+| `src/core/discovery.ts` | Scans candidate IPs in parallel batches to find scanners on the network |
+| `src/core/types.ts` | Shared types: `ScanSettings`, `ScannerCapabilities`, `ScanJob`, `ScanResult`, etc. |
 | `src/background.js` | Service Worker — handles all message dispatching |
 | `src/popup/` | Main UI (350px popup) |
 | `src/preview/` | Full-tab scan preview page |
