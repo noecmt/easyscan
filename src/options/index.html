@@ -1,84 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
   <meta charset="utf-8">
-  <title>Easy Scan - Options</title>
+  <title>Easy Scan — Settings</title>
   <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
   <div class="container options-container">
-    <h1>Easy Scan - Options</h1>
+    <h1>⚙️ Easy Scan — Settings</h1>
 
+    <!-- My Scanners -->
     <section class="options-section">
-      <h2>Paramètres par défaut</h2>
+      <h2>📡 My Scanners</h2>
+
+      <ul id="scanner-list"></ul>
+
+      <div id="add-scanner-form" class="hidden">
+        <div class="field">
+          <label for="new-scanner-ip">IP address</label>
+          <input type="text" id="new-scanner-ip" placeholder="192.168.1.100">
+        </div>
+        <div class="field">
+          <label for="new-scanner-name">Name</label>
+          <input type="text" id="new-scanner-name" placeholder="My scanner">
+        </div>
+        <div class="add-scanner-actions">
+          <button id="add-scanner-confirm-btn">Add</button>
+          <button id="add-scanner-cancel-btn" class="btn-secondary">Cancel</button>
+        </div>
+      </div>
+
+      <div class="scanner-actions-row">
+        <button id="add-scanner-btn">+ Add scanner</button>
+        <button id="discover-btn" class="btn-secondary">🔍 Discover on network</button>
+      </div>
+
+      <p id="discover-status" class="status"></p>
+      <select id="discover-results" class="hidden">
+        <option value="">Select a scanner…</option>
+      </select>
+      <div id="discover-name-row" class="discover-add-row hidden">
+        <input type="text" id="discover-name-input" placeholder="Scanner name">
+        <button id="discover-add-btn">Add</button>
+      </div>
+    </section>
+
+    <!-- Default Settings -->
+    <section class="options-section">
+      <h2>🎛️ Default Settings</h2>
 
       <div class="field">
-        <label for="defaultDpi">Résolution par défaut:</label>
-        <select id="defaultDpi">
-          <option value="150">150 DPI (rapide)</option>
+        <label for="dpi">Resolution</label>
+        <select id="dpi">
+          <option value="75">75 DPI</option>
+          <option value="150">150 DPI</option>
           <option value="300" selected>300 DPI (standard)</option>
-          <option value="600">600 DPI (haute qualité)</option>
+          <option value="600">600 DPI</option>
+          <option value="1200">1200 DPI</option>
         </select>
       </div>
 
       <div class="field">
-        <label for="defaultColorMode">Mode couleur par défaut:</label>
-        <select id="defaultColorMode">
-          <option value="RGB24" selected>Couleur</option>
-          <option value="Grayscale8">Niveaux de gris</option>
-          <option value="BlackAndWhite1">Noir et blanc</option>
+        <label for="colorMode">Color mode</label>
+        <select id="colorMode">
+          <option value="RGB24" selected>Color</option>
+          <option value="Grayscale8">Grayscale</option>
+          <option value="BlackAndWhite1">Black &amp; White</option>
         </select>
       </div>
 
       <div class="field">
-        <label for="defaultFormat">Format par défaut:</label>
-        <select id="defaultFormat">
-          <option value="jpeg" selected>JPEG (recommandé)</option>
+        <label for="format">Format</label>
+        <select id="format">
+          <option value="jpeg" selected>JPEG (recommended)</option>
           <option value="png">PNG</option>
           <option value="pdf">PDF</option>
         </select>
       </div>
+
+      <button id="reset-btn" class="btn-secondary">Reset to defaults</button>
+      <p id="settings-status" class="status"></p>
     </section>
 
+    <!-- About -->
     <section class="options-section">
-      <h2>Scanner par défaut</h2>
-
-      <div class="field">
-        <label for="defaultScanner">Scanner configuré:</label>
-        <div class="scanner-controls">
-          <input type="text" id="defaultScanner" placeholder="Aucun scanner configuré" readonly />
-          <button id="discoverScannersBtn" class="discover-button">🔍 Découvrir</button>
-        </div>
-      </div>
-
-      <select id="discoveredScanners" class="hidden">
-        <option value="">Sélectionner un scanner...</option>
-      </select>
-
-      <div class="scanner-actions hidden" id="scannerActions">
-        <button id="testScannerBtn" class="test-button">🔗 Tester la connexion</button>
-        <button id="clearScannerBtn" class="clear-button">❌ Effacer</button>
-      </div>
-
-      <div id="scannerStatus" class="status"></div>
-    </section>
-
-    <section class="options-section">
-      <h2>Actions</h2>
-      <button id="saveBtn" class="save-button">💾 Sauvegarder les paramètres</button>
-      <button id="resetBtn" class="reset-button">🔄 Réinitialiser</button>
-
-      <div id="optionsStatus" class="status"></div>
-    </section>
-
-    <section class="options-section">
-      <h2>À propos</h2>
-      <p><strong>Easy Scan v1.1.1</strong></p>
-      <p>Extension Chrome pour scanner via eSCL/AirScan</p>
-      <p>Découverte automatique • Interface compacte • Scan ultra-rapide</p>
+      <h2>ℹ️ About</h2>
+      <p>Easy Scan <span id="version"></span></p>
+      <p style="color:#666">Chrome extension for wireless scanning via eSCL/AirScan.</p>
     </section>
   </div>
 
-  <script type="module" src="options.js"></script>
+  <script type="module" src="options.ts"></script>
 </body>
 </html>

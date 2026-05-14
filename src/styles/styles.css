@@ -424,3 +424,161 @@ button:disabled {
 .status:not(:empty) {
   animation: fadeIn 0.15s ease;
 }
+
+/* ── Scanner list (options page) ─────────────────────────────── */
+
+#scanner-list {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+}
+
+.scanner-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  margin-bottom: 6px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.scanner-item__icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.scanner-item__name {
+  flex: 1;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scanner-item__name:hover {
+  color: var(--primary-color);
+  text-decoration: underline dotted;
+}
+
+.scanner-item__name-input {
+  flex: 1;
+  width: auto;
+  font-size: 11px;
+  padding: 2px 4px;
+}
+
+.scanner-item__ip {
+  font-size: 10px;
+  color: #666;
+  font-family: monospace;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.badge-active {
+  font-size: 9px;
+  background: var(--success-color);
+  color: white;
+  padding: 2px 5px;
+  border-radius: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.scanner-item__actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.btn-test {
+  background: var(--info-color);
+  font-size: 10px;
+  padding: 3px 7px;
+}
+
+.btn-test.btn-success {
+  background: var(--success-color);
+}
+
+.btn-test.btn-error {
+  background: var(--error-color);
+}
+
+.btn-set-active {
+  background: var(--background-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  font-size: 10px;
+  padding: 3px 7px;
+}
+
+.btn-set-active:hover:not(:disabled) {
+  background: var(--primary-color);
+  color: white;
+  transform: none;
+}
+
+.btn-delete {
+  background: var(--error-color);
+  font-size: 10px;
+  padding: 3px 7px;
+}
+
+.btn-secondary {
+  background: var(--background-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--primary-color);
+  color: white;
+}
+
+.scanner-actions-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.add-scanner-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+#add-scanner-form {
+  padding: 10px;
+  background: #f8f9fa;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--border-radius);
+  margin-bottom: 8px;
+}
+
+#add-scanner-form .field {
+  margin-bottom: 6px;
+}
+
+.discover-add-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  align-items: center;
+}
+
+.discover-add-row input {
+  flex: 1;
+}
+
+#discover-results:not(.hidden) {
+  margin-top: 8px;
+  background: #f0f8ff;
+  border-color: var(--primary-color);
+  display: block;
+}
