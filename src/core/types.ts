@@ -45,4 +45,5 @@ export interface DiscoveryOptions {
   timeout?: number
   subnets?: string[]
   batchSize?: number
+  knownIps?: string[]
 }

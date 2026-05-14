@@ -101,21 +101,21 @@ async function autoDiscoverScanners() {
     // Lancer une découverte réseau ultra-rapide (seulement les IPs les plus communes)
     const response = await sendMessage({
       type: 'DISCOVER_SCANNERS',
-      payload: { subnet: null, start: 1, end: 20 } // Scan ultra-rapide
+      payload: {},
     });
-    
+
     if (response.ok && response.scanners.length > 0) {
       // Prendre le premier scanner trouvé
       const firstScanner = response.scanners[0];
-      elements.scannerIP.value = firstScanner.url;
-      
+      elements.scannerIP.value = firstScanner.baseUrl;
+
       // Remplir la liste déroulante avec tous les scanners trouvés
       elements.discoveredSelect.innerHTML = '<option value="">Sélectionner un scanner découvert...</option>';
       for (const scanner of response.scanners) {
         const option = document.createElement('option');
-        option.value = scanner.url;
+        option.value = scanner.baseUrl;
         option.textContent = `${scanner.ip} – ${scanner.name}`;
-        if (scanner.url === firstScanner.url) {
+        if (scanner.baseUrl === firstScanner.baseUrl) {
           option.selected = true;
         }
         elements.discoveredSelect.appendChild(option);
@@ -188,19 +188,22 @@ async function handleDiscover() {
     
     const response = await sendMessage({
       type: 'DISCOVER_SCANNERS',
-      payload: { subnet: subnet || null, start: 1, end: 254 }
+      payload: {
+        scannerIp: elements.scannerIP.value.trim(),
+        ...(subnet ? { subnetHint: subnet } : {}),
+      },
     });
-    
+
     if (!response.ok) throw new Error(response.error || 'Échec de la découverte');
-    
+
     if (!response.scanners.length) {
       setStatus('Aucun scanner trouvé (plage restreinte)', 'error');
       return;
     }
-    
+
     for (const scanner of response.scanners) {
       const option = document.createElement('option');
-      option.value = scanner.url;
+      option.value = scanner.baseUrl;
       option.textContent = `${scanner.ip} – ${scanner.name}`;
       elements.discoveredSelect.appendChild(option);
     }

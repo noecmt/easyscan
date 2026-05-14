@@ -3,7 +3,7 @@
  */
 
 import { createScanJob, fetchScannedImage, getCapabilities, adjustSettingsForCapabilities, checkConnectivity, buildScanJobXML, warmUpScanner } from './core/escl.js';
-import { discoverScanners, buildCandidateIPs } from './core/discovery.js';
+import { discoverScanners } from './core/discovery';
 
 let lastScan = null;
 
@@ -39,9 +39,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         }
         
         case 'DISCOVER_SCANNERS': {
-          const { subnet, start = 1, end = 50 } = payload || {};
-          const candidates = buildCandidateIPs(subnet, start, end);
-          const discovered = await discoverScanners(candidates);
+          const { scannerIp, subnetHint } = payload || {};
+          const knownIps = scannerIp ? [scannerIp.replace(/^https?:\/\//, '')] : [];
+          const discovered = await discoverScanners({
+            knownIps,
+            ...(subnetHint ? { subnets: [subnetHint] } : {}),
+          });
           sendResponse({ ok: true, scanners: discovered });
           break;
         }
