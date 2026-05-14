@@ -1,11 +1,21 @@
 import type { DiscoveredScanner, DiscoveryOptions } from './types'
 
-const DEFAULT_TIMEOUT = 800
+const DEFAULT_TIMEOUT = 1500
 const DEFAULT_BATCH_SIZE = 20
 const DEFAULT_SUBNETS = ['192.168.68', '192.168.1', '192.168.0', '10.0.0', '172.16.0']
 
-const PRIORITY_SUFFIXES = [106, 100, 101, 102, 103, 1, 2, 200, 201, 202]
-const SECONDARY_SUFFIXES = [104, 105, 107, 108, 109, 110, 203, 204, 205, 206, 10, 20, 30, 50]
+// Common printer/IoT IP endings assigned by most DHCP routers
+const PRIORITY_SUFFIXES = [
+  1, 2, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110,
+  200, 201, 202, 203, 204, 205, 206,
+  10, 11, 12, 13, 14, 15, 20, 21, 22, 30, 50, 51,
+]
+
+// Full sweep of remaining .1–.254 addresses not already in priority list
+const _PRIORITY_SET = new Set(PRIORITY_SUFFIXES)
+const SECONDARY_SUFFIXES = Array.from({ length: 254 }, (_, i) => i + 1).filter(
+  n => !_PRIORITY_SET.has(n)
+)
 
 async function getLocalSubnets(): Promise<string[]> {
   try {

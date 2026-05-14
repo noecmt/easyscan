@@ -47,3 +47,15 @@ export interface DiscoveryOptions {
   batchSize?: number
   knownIps?: string[]
 }
+
+export interface ScanJob {
+  jobUrl: string  // path-only, e.g. "/eSCL/ScanJobs/1"
+  protocol: ScannerProtocol
+}
+
+export type ScanJobStatus = 'Processing' | 'Completed' | 'Aborted' | 'Canceled'
+
+export interface ScanResult {
+  blob: Blob
+  mimeType: string
+}
