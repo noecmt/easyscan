@@ -31,3 +31,18 @@ export interface ScanRecord {
   timestamp: number
   scannerId?: string
 }
+
+export type ScannerProtocol = 'escl' | 'airscan'
+
+export interface DiscoveredScanner {
+  ip: string
+  name: string
+  protocol: ScannerProtocol
+  baseUrl: string
+}
+
+export interface DiscoveryOptions {
+  timeout?: number
+  subnets?: string[]
+  batchSize?: number
+}
