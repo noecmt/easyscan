@@ -1,5 +1,5 @@
 import { StorageItem } from 'webext-storage'
-import type { SavedScanner, ScanRecord, ScanSettings } from '../core/types'
+import type { SavedScanner, ScanRecord, ScanSettings, Theme } from '../core/types'
 
 export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
@@ -7,11 +7,22 @@ export function generateId(): string {
 
 // ─── Storage items ────────────────────────────────────────────
 
+const themeItem = new StorageItem<Theme>('theme')
 const scannersItem = new StorageItem<SavedScanner[]>('scanners')
 const activeScannerIdItem = new StorageItem<string>('activeScannerId')
 const scanHistoryItem = new StorageItem<ScanRecord[]>('scanHistory')
 const currentScanItem = new StorageItem<ScanRecord>('currentScan')
 const defaultSettingsItem = new StorageItem<Partial<ScanSettings>>('defaultSettings', { area: 'sync' })
+
+// ─── Theme ────────────────────────────────────────────────────
+
+export async function getTheme(): Promise<Theme> {
+  return (await themeItem.get()) ?? 'dark'
+}
+
+export async function saveTheme(theme: Theme): Promise<void> {
+  await themeItem.set(theme)
+}
 
 // ─── Scanners ─────────────────────────────────────────────────
 

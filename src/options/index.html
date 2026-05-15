@@ -51,7 +51,21 @@
       <h2>Paramètres par défaut</h2>
 
       <div class="field">
-        <label for="dpi">Resolution</label>
+        <label>Thème de l'interface</label>
+        <div class="theme-selector" id="theme-selector">
+          <button class="theme-option active" data-value="dark">
+            <span class="theme-option-icon">☽</span>
+            <span>Sombre</span>
+          </button>
+          <button class="theme-option" data-value="light">
+            <span class="theme-option-icon">☀</span>
+            <span>Clair</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="dpi">Résolution</label>
         <select id="dpi">
           <option value="75">75 DPI</option>
           <option value="150">150 DPI</option>
@@ -62,7 +76,7 @@
       </div>
 
       <div class="field">
-        <label for="colorMode">Color mode</label>
+        <label for="colorMode">Mode couleur</label>
         <select id="colorMode">
           <option value="RGB24" selected>Color</option>
           <option value="Grayscale8">Grayscale</option>
@@ -71,7 +85,7 @@
       </div>
 
       <div class="field">
-        <label for="format">Format</label>
+        <label for="format">Format de sortie</label>
         <select id="format">
           <option value="jpeg" selected>JPEG (recommended)</option>
           <option value="png">PNG</option>

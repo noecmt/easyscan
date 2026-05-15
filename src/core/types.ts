@@ -1,3 +1,5 @@
+export type Theme = 'dark' | 'light'
+
 export type ColorMode = 'RGB24' | 'Grayscale8' | 'BlackAndWhite1'
 export type ScanFormat = 'jpeg' | 'png' | 'pdf'
 export type DPI = 75 | 150 | 300 | 600 | 1200

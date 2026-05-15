@@ -661,3 +661,92 @@ button:disabled { opacity: 0.38; cursor: not-allowed; transform: none; }
 @media (max-width: 600px) {
   .options-container { width: 100%; padding: 12px; }
 }
+
+/* ══════════════════════════════════════════════════════════════ */
+/* LIGHT THEME OVERRIDES                                          */
+/* ══════════════════════════════════════════════════════════════ */
+
+[data-theme="light"] {
+  --bg:          #f5f3ef;
+  --surface:     #ffffff;
+  --surface-2:   #eeecea;
+  --surface-3:   #e4e1dc;
+  --border:      #d8d4cc;
+  --border-hi:   #c2bdb4;
+  --accent:      #1a6fd4;
+  --accent-dim:  #e6f0fc;
+  --accent-glow: rgba(26, 111, 212, 0.12);
+  --success:     #1e8c52;
+  --success-dim: #e6f5ed;
+  --error:       #c23030;
+  --error-dim:   #fce8e8;
+  --warn:        #b86b00;
+  --text-1:      #1c1a26;
+  --text-2:      #5a566e;
+  --text-3:      #9490a0;
+}
+
+[data-theme="light"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a566e'/%3E%3C/svg%3E");
+}
+
+[data-theme="light"] .scan-button {
+  box-shadow: 0 2px 8px rgba(26, 111, 212, 0.2);
+}
+
+[data-theme="light"] .scan-button:hover:not(:disabled) {
+  background: #1560bc;
+  box-shadow: 0 3px 12px rgba(26, 111, 212, 0.35);
+}
+
+@keyframes pulse-border-light {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26, 111, 212, 0.4); }
+  50%       { box-shadow: 0 0 0 4px rgba(26, 111, 212, 0); }
+}
+
+[data-theme="light"] .scan-button.scanning {
+  animation: pulse-border-light 1.5s ease-in-out infinite;
+}
+
+/* ── Theme selector widget ───────────────────────────────────── */
+.theme-selector {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.theme-option {
+  flex: 1;
+  padding: 8px 10px;
+  background: transparent;
+  color: var(--text-2);
+  border: none;
+  border-radius: 0;
+  font-family: var(--font);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.theme-option:hover:not(.active):not(:disabled) {
+  background: var(--surface-3);
+  color: var(--text-1);
+  transform: none;
+}
+
+.theme-option.active {
+  background: var(--surface-3);
+  color: var(--text-1);
+  font-weight: 600;
+  cursor: default;
+}
+
+.theme-option:first-child { border-right: 1px solid var(--border); }
+
+.theme-option-icon { font-size: 13px; line-height: 1; }

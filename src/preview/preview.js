@@ -7,11 +7,18 @@ class PreviewManager {
     }
 
     async init() {
+        await this.applyTheme();
         await this.loadElements();
         await this.setupEventListeners();
         await this.loadCurrentScan();
         await this.loadScanHistory();
         this.hideLoading();
+    }
+
+    async applyTheme() {
+        const result = await chrome.storage.local.get('theme');
+        const theme = result.theme ?? 'dark';
+        document.documentElement.dataset.theme = theme;
     }
 
     async loadElements() {

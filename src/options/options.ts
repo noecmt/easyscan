@@ -2,9 +2,10 @@ import {
   getScanners, saveScanner, deleteScanner,
   getActiveScanner, setActiveScanner,
   getSettings, saveSettings,
+  getTheme, saveTheme,
   generateId,
 } from '../storage/index'
-import type { SavedScanner, DPI, ColorMode, ScanFormat, DiscoveredScanner } from '../core/types'
+import type { SavedScanner, DPI, ColorMode, ScanFormat, DiscoveredScanner, Theme } from '../core/types'
 
 // ─── State ────────────────────────────────────────────────────
 
@@ -241,6 +242,29 @@ async function resetSettings(): Promise<void> {
   showStatus('settings-status', 'Reset to defaults', 'success')
 }
 
+// ─── Theme ────────────────────────────────────────────────────
+
+function applyTheme(theme: Theme): void {
+  document.documentElement.dataset.theme = theme
+  const selector = document.getElementById('theme-selector')!
+  selector.querySelectorAll<HTMLButtonElement>('.theme-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.value === theme)
+  })
+}
+
+async function initTheme(): Promise<void> {
+  const theme = await getTheme()
+  applyTheme(theme)
+
+  document.getElementById('theme-selector')!.addEventListener('click', async (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.theme-option')
+    if (!btn?.dataset.value) return
+    const newTheme = btn.dataset.value as Theme
+    await saveTheme(newTheme)
+    applyTheme(newTheme)
+  })
+}
+
 // ─── Version ──────────────────────────────────────────────────
 
 function loadVersion(): void {
@@ -250,6 +274,7 @@ function loadVersion(): void {
 // ─── Init ─────────────────────────────────────────────────────
 
 async function init(): Promise<void> {
+  await initTheme()
   await renderScannerList()
   await loadSettings()
   loadVersion()

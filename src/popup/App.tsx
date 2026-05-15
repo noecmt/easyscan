@@ -1,4 +1,4 @@
-import { useReducer } from 'preact/hooks'
+import { useReducer, useState, useEffect } from 'preact/hooks'
 import { ScannerSelector } from './components/ScannerSelector'
 import { ScanControls } from './components/ScanControls'
 import { ScanButton } from './components/ScanButton'
@@ -6,9 +6,9 @@ import { PreviewPanel } from './components/PreviewPanel'
 import { StatusBar } from './components/StatusBar'
 import { sendMessage } from './hooks/useMessages'
 import { useScanner } from './hooks/useScanner'
-import { setActiveScanner, saveScanner, saveSettings } from '../storage'
+import { setActiveScanner, saveScanner, saveSettings, getTheme, saveTheme } from '../storage'
 import { generateId } from '../storage'
-import type { SavedScanner, ScanRecord, ScanSettings } from '../core/types'
+import type { SavedScanner, ScanRecord, ScanSettings, Theme } from '../core/types'
 
 type AppStatus = 'idle' | 'discovering' | 'scanning' | 'done' | 'error'
 
@@ -68,6 +68,21 @@ function reducer(state: AppState, action: AppAction): AppState {
 export function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { status, scanners, activeScannerId, settings, currentScan, errorMessage } = state
+  const [theme, setTheme] = useState<Theme>('dark')
+
+  useEffect(() => {
+    getTheme().then(t => {
+      setTheme(t)
+      document.documentElement.dataset.theme = t
+    })
+  }, [])
+
+  const handleToggleTheme = async () => {
+    const next: Theme = theme === 'dark' ? 'light' : 'dark'
+    await saveTheme(next)
+    setTheme(next)
+    document.documentElement.dataset.theme = next
+  }
 
   useScanner((loadedScanners, loadedSettings, activeId) => {
     dispatch({ type: 'SET_SCANNERS', scanners: loadedScanners })
@@ -166,6 +181,9 @@ export function App() {
           <h1>Easy Scan</h1>
         </div>
         <div class="header-actions">
+          <button class="icon-btn theme-toggle-btn" onClick={handleToggleTheme} title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}>
+            {theme === 'dark' ? '☀' : '☽'}
+          </button>
           <button class="icon-btn" onClick={handleOpenHistory} title="Historique">&#x2630;</button>
           <button class="icon-btn" onClick={handleOpenSettings} title="Paramètres">&#x2699;</button>
         </div>

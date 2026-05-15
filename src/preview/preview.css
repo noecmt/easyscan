@@ -395,3 +395,26 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #4a5470; }
+
+/* ── Light theme ───────────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f5f3ef;
+  --surface:     #ffffff;
+  --surface-2:   #eeecea;
+  --surface-3:   #e4e1dc;
+  --border:      #d8d4cc;
+  --border-hi:   #c2bdb4;
+  --accent:      #1a6fd4;
+  --accent-dim:  #e6f0fc;
+  --accent-glow: rgba(26, 111, 212, 0.12);
+  --success:     #1e8c52;
+  --success-dim: #e6f5ed;
+  --error:       #c23030;
+  --error-dim:   #fce8e8;
+  --warn:        #b86b00;
+  --text-1:      #1c1a26;
+  --text-2:      #5a566e;
+  --text-3:      #9490a0;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #8a8698; }
