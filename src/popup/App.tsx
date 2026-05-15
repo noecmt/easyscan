@@ -1,4 +1,5 @@
 import { useReducer, useState, useEffect } from 'preact/hooks'
+import { t } from '../utils/i18n'
 import { ScannerSelector } from './components/ScannerSelector'
 import { ScanControls } from './components/ScanControls'
 import { ScanButton } from './components/ScanButton'
@@ -71,9 +72,9 @@ export function App() {
   const [theme, setTheme] = useState<Theme>('dark')
 
   useEffect(() => {
-    getTheme().then(t => {
-      setTheme(t)
-      document.documentElement.dataset.theme = t
+    getTheme().then(theme => {
+      setTheme(theme)
+      document.documentElement.dataset.theme = theme
     })
   }, [])
 
@@ -117,7 +118,7 @@ export function App() {
         dispatch({ type: 'SET_ACTIVE_SCANNER', id: updated[0].id })
       }
     } catch {
-      dispatch({ type: 'SCAN_ERROR', message: 'Découverte des scanners échouée' })
+      dispatch({ type: 'SCAN_ERROR', message: t('discoveryFailed') })
     }
   }
 
@@ -132,7 +133,7 @@ export function App() {
       }
       dispatch({ type: 'SCAN_DONE', record: res.record })
     } catch (e) {
-      dispatch({ type: 'SCAN_ERROR', message: e instanceof Error ? e.message : 'Erreur inconnue' })
+      dispatch({ type: 'SCAN_ERROR', message: e instanceof Error ? e.message : t('unknownError') })
     }
   }
 
@@ -167,10 +168,10 @@ export function App() {
   }
 
   const statusMessage =
-    status === 'discovering' ? 'Recherche de scanners...' :
-    status === 'scanning' ? 'Scan en cours...' :
-    status === 'done' ? 'Scan terminé !' :
-    status === 'error' ? (errorMessage ?? 'Erreur') :
+    status === 'discovering' ? t('discoveringScanner') :
+    status === 'scanning' ? t('scanInProgress') :
+    status === 'done' ? t('scanComplete') :
+    status === 'error' ? (errorMessage ?? t('unknownError')) :
     ''
 
   return (
@@ -181,11 +182,11 @@ export function App() {
           <h1>Easy Scan</h1>
         </div>
         <div class="header-actions">
-          <button class="icon-btn theme-toggle-btn" onClick={handleToggleTheme} title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}>
+          <button class="icon-btn theme-toggle-btn" onClick={handleToggleTheme} title={theme === 'dark' ? t('lightMode') : t('darkMode')}>
             {theme === 'dark' ? '☀' : '☽'}
           </button>
-          <button class="icon-btn" onClick={handleOpenHistory} title="Historique">&#x2630;</button>
-          <button class="icon-btn" onClick={handleOpenSettings} title="Paramètres">&#x2699;</button>
+          <button class="icon-btn" onClick={handleOpenHistory} title={t('history')}>&#x2630;</button>
+          <button class="icon-btn" onClick={handleOpenSettings} title={t('settings')}>&#x2699;</button>
         </div>
       </div>
       <section class="main-section">

@@ -6,6 +6,7 @@ import {
   generateId,
 } from '../storage/index'
 import type { SavedScanner, DPI, ColorMode, ScanFormat, DiscoveredScanner, Theme } from '../core/types'
+import { t, applyI18n, initI18n } from '../utils/i18n'
 
 // ─── State ────────────────────────────────────────────────────
 
@@ -37,7 +38,7 @@ function createScannerRow(scanner: SavedScanner, isActive: boolean): HTMLLIEleme
   // Inline-editable name
   const nameSpan = document.createElement('span')
   nameSpan.className = 'scanner-item__name'
-  nameSpan.title = 'Click to rename'
+  nameSpan.title = t('clickToRename')
   nameSpan.textContent = scanner.name
 
   nameSpan.addEventListener('click', () => {
@@ -71,24 +72,24 @@ function createScannerRow(scanner: SavedScanner, isActive: boolean): HTMLLIEleme
   if (isActive) {
     const badge = document.createElement('span')
     badge.className = 'badge-active'
-    badge.textContent = '✓ Active'
+    badge.textContent = t('activeBadge')
     actions.appendChild(badge)
   } else {
     const setActiveBtn = document.createElement('button')
     setActiveBtn.className = 'btn-set-active'
-    setActiveBtn.textContent = 'Set active'
+    setActiveBtn.textContent = t('setActive')
     setActiveBtn.addEventListener('click', () => handleSetActive(scanner.id))
     actions.appendChild(setActiveBtn)
   }
 
   const testBtn = document.createElement('button')
   testBtn.className = 'btn-test'
-  testBtn.textContent = 'Test'
+  testBtn.textContent = t('test')
   testBtn.addEventListener('click', () => handleTestScanner(scanner.ip, testBtn))
 
   const deleteBtn = document.createElement('button')
   deleteBtn.className = 'btn-delete'
-  deleteBtn.textContent = 'Delete'
+  deleteBtn.textContent = t('delete')
   deleteBtn.addEventListener('click', () => handleDeleteScanner(scanner.id))
 
   actions.appendChild(testBtn)
@@ -165,7 +166,7 @@ async function handleTestScanner(ip: string, btn: HTMLButtonElement): Promise<vo
 async function handleDiscover(): Promise<void> {
   const discoverBtn = document.getElementById('discover-btn') as HTMLButtonElement
   discoverBtn.disabled = true
-  showStatus('discover-status', 'Searching…', 'info')
+  showStatus('discover-status', t('searching'), 'info')
   document.getElementById('discover-results')!.classList.add('hidden')
   document.getElementById('discover-name-row')!.classList.add('hidden')
 
@@ -176,14 +177,14 @@ async function handleDiscover(): Promise<void> {
     })
 
     if (!res.ok || !res.scanners.length) {
-      showStatus('discover-status', 'No scanners found on network', 'error')
+      showStatus('discover-status', t('noScannersFound'), 'error')
       return
     }
 
     discoveredCache = res.scanners
 
     const select = document.getElementById('discover-results') as HTMLSelectElement
-    select.innerHTML = '<option value="">Select a scanner…</option>'
+    select.innerHTML = `<option value="">${t('selectScanner')}</option>`
     for (const s of res.scanners) {
       const opt = document.createElement('option')
       opt.value = s.baseUrl
@@ -192,7 +193,7 @@ async function handleDiscover(): Promise<void> {
     }
     select.classList.remove('hidden')
     document.getElementById('discover-name-row')!.classList.remove('hidden')
-    showStatus('discover-status', `${res.scanners.length} scanner(s) found`, 'success')
+    showStatus('discover-status', t('scannersFound', [String(res.scanners.length)]), 'success')
   } catch (e) {
     showStatus('discover-status', `Error: ${(e as Error).message}`, 'error')
   } finally {
@@ -233,13 +234,13 @@ async function saveDefaultSettings(): Promise<void> {
   const colorMode = (document.getElementById('colorMode') as HTMLSelectElement).value as ColorMode
   const format = (document.getElementById('format') as HTMLSelectElement).value as ScanFormat
   await saveSettings({ dpi, colorMode, format })
-  showStatus('settings-status', 'Saved', 'success')
+  showStatus('settings-status', t('saved'), 'success')
 }
 
 async function resetSettings(): Promise<void> {
   await saveSettings({ dpi: 300, colorMode: 'RGB24', format: 'jpeg' })
   await loadSettings()
-  showStatus('settings-status', 'Reset to defaults', 'success')
+  showStatus('settings-status', t('resetToDefaults'), 'success')
 }
 
 // ─── Theme ────────────────────────────────────────────────────
@@ -273,10 +274,23 @@ function loadVersion(): void {
 
 // ─── Init ─────────────────────────────────────────────────────
 
+async function loadLang(): Promise<void> {
+  const { lang } = await chrome.storage.local.get('lang')
+  const select = document.getElementById('lang') as HTMLSelectElement
+  select.value = lang ?? 'auto'
+  select.addEventListener('change', async () => {
+    await chrome.storage.local.set({ lang: select.value })
+    window.location.reload()
+  })
+}
+
 async function init(): Promise<void> {
+  await initI18n()
+  applyI18n()
   await initTheme()
   await renderScannerList()
   await loadSettings()
+  await loadLang()
   loadVersion()
 
   // Add scanner form

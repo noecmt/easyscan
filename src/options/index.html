@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="color-scheme" content="dark">
-  <title>Easy Scan — Paramètres</title>
+  <title data-i18n="optionsTitle">Easy Scan — Settings</title>
   <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
   <div class="container options-container">
-    <h1>Easy Scan — Paramètres</h1>
+    <h1 data-i18n="optionsTitle">Easy Scan — Settings</h1>
 
     <!-- My Scanners -->
     <section class="options-section">
-      <h2>Scanners</h2>
+      <h2 data-i18n="scanners">Scanners</h2>
 
       <ul id="scanner-list"></ul>
 
@@ -48,24 +48,33 @@
 
     <!-- Default Settings -->
     <section class="options-section">
-      <h2>Paramètres par défaut</h2>
+      <h2 data-i18n="defaultSettings">Default settings</h2>
 
       <div class="field">
-        <label>Thème de l'interface</label>
+        <label for="lang" data-i18n="languageLabel">Language</label>
+        <select id="lang">
+          <option value="auto" data-i18n="langAuto">Auto (browser)</option>
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label data-i18n="interfaceTheme">Interface theme</label>
         <div class="theme-selector" id="theme-selector">
           <button class="theme-option active" data-value="dark">
             <span class="theme-option-icon">☽</span>
-            <span>Sombre</span>
+            <span data-i18n="dark">Dark</span>
           </button>
           <button class="theme-option" data-value="light">
             <span class="theme-option-icon">☀</span>
-            <span>Clair</span>
+            <span data-i18n="light">Light</span>
           </button>
         </div>
       </div>
 
       <div class="field">
-        <label for="dpi">Résolution</label>
+        <label for="dpi" data-i18n="resolution">Resolution</label>
         <select id="dpi">
           <option value="75">75 DPI</option>
           <option value="150">150 DPI</option>
@@ -76,7 +85,7 @@
       </div>
 
       <div class="field">
-        <label for="colorMode">Mode couleur</label>
+        <label for="colorMode" data-i18n="colorMode">Color mode</label>
         <select id="colorMode">
           <option value="RGB24" selected>Color</option>
           <option value="Grayscale8">Grayscale</option>
@@ -85,7 +94,7 @@
       </div>
 
       <div class="field">
-        <label for="format">Format de sortie</label>
+        <label for="format" data-i18n="outputFormat">Output format</label>
         <select id="format">
           <option value="jpeg" selected>JPEG (recommended)</option>
           <option value="png">PNG</option>
@@ -93,15 +102,15 @@
         </select>
       </div>
 
-      <button id="reset-btn" class="reset-button">Réinitialiser</button>
+      <button id="reset-btn" class="reset-button" data-i18n="resetBtn">Reset</button>
       <p id="settings-status" class="status"></p>
     </section>
 
     <!-- About -->
     <section class="options-section">
-      <h2>À propos</h2>
+      <h2 data-i18n="about">About</h2>
       <p>Easy Scan <span id="version"></span></p>
-      <p class="about-desc">Extension Chrome pour scanner sans fil via eSCL/AirScan.</p>
+      <p class="about-desc" data-i18n="aboutDesc">Chrome extension for wireless scanning via eSCL/AirScan.</p>
     </section>
   </div>
 

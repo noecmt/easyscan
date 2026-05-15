@@ -3,11 +3,17 @@ import { discoverScanners } from './core/discovery'
 import { blobToDataUrl } from './core/utils'
 import { addToHistory, generateId } from './storage'
 import type { ScanSettings, ScanRecord } from './core/types'
+import { t, initI18n } from './utils/i18n'
 
 let lastScan: ScanRecord | null = null
+let i18nReady = initI18n()
+
+chrome.storage.onChanged.addListener(changes => {
+  if (changes.lang) i18nReady = initI18n()
+})
 
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-  handleMessage(msg).then(sendResponse)
+  i18nReady.then(() => handleMessage(msg)).then(sendResponse)
   return true
 })
 
@@ -44,31 +50,23 @@ async function handleMessage(msg: { type: string } & Record<string, unknown>) {
         return { success: true, scan: lastScan }
 
       case 'COPY_LAST_SCAN':
-        if (!lastScan) return { success: false, error: 'Aucun scan disponible' }
+        if (!lastScan) return { success: false, error: t('noScanAvailable') }
         return { success: true, scan: lastScan }
 
       default:
-        return { success: false, error: `Type de message inconnu : ${msg.type}` }
+        return { success: false, error: t('unknownMessage', [msg.type]) }
     }
   } catch (e) {
-    let message = e instanceof Error ? e.message : 'Erreur inconnue'
+    let message = e instanceof Error ? e.message : t('unknownError')
     if (e instanceof ScannerError) {
       switch (e.code) {
-        case 'expired':
-          message = 'Le scanner a annulé le job. Vérifiez que le scanner est prêt et réessayez.'
-          break
-        case 'busy':
-          message = 'Scanner occupé. Attendez quelques secondes et réessayez.'
-          break
-        case 'canceled':
-          message = 'Scan annulé par le scanner. Réessayez.'
-          break
-        case 'network':
-          message = "Impossible de joindre le scanner. Vérifiez l'adresse IP."
-          break
+        case 'expired':  message = t('scannerExpired'); break
+        case 'busy':     message = t('scannerBusy'); break
+        case 'canceled': message = t('scannerCancelled'); break
+        case 'network':  message = t('scannerUnreachable'); break
       }
     } else if (message.includes('Failed to fetch')) {
-      message = "Impossible de joindre le scanner. Vérifiez l'adresse IP."
+      message = t('scannerUnreachable')
     }
     return { success: false, error: message }
   }

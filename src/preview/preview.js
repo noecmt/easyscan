@@ -1,4 +1,5 @@
-// Gestionnaire de la page de preview
+import { t, applyI18n, initI18n } from '../utils/i18n'
+
 class PreviewManager {
     constructor() {
         this.currentScan = null;
@@ -7,6 +8,8 @@ class PreviewManager {
     }
 
     async init() {
+        await initI18n();
+        applyI18n();
         await this.applyTheme();
         await this.loadElements();
         await this.setupEventListeners();
@@ -141,7 +144,7 @@ class PreviewManager {
         // Date
         if (timestamp) {
             const date = new Date(timestamp);
-            this.elements.scanDate.textContent = date.toLocaleString('fr-FR');
+            this.elements.scanDate.textContent = date.toLocaleString(chrome.i18n.getUILanguage());
         }
         
         // Format
@@ -172,7 +175,7 @@ class PreviewManager {
         historyContainer.innerHTML = '';
         
         if (this.scanHistory.length === 0) {
-            historyContainer.innerHTML = '<p style="color: #666; font-style: italic;">Aucun scan dans l\'historique</p>';
+            historyContainer.innerHTML = `<p style="color: #666; font-style: italic;">${t('noScanHistory')}</p>`;
             return;
         }
 
@@ -197,7 +200,7 @@ class PreviewManager {
                     <div style="font-weight: 500;">${formatText}</div>
                     <div style="font-size: 0.7rem; opacity: 0.8;">${date.toLocaleDateString()}</div>
                 </div>
-                <button class="delete-btn" title="Supprimer ce scan">×</button>
+                <button class="delete-btn" title="${t('deleteScan')}">×</button>
             `;
             
             // Gestionnaire de clic pour sélectionner l'item
@@ -251,11 +254,11 @@ class PreviewManager {
             this.renderHistory();
             
             // Afficher un message de confirmation discret
-            this.showToast('Scan supprimé de l\'historique', 'success');
+            this.showToast(t('scanDeleted'), 'success');
             
         } catch (error) {
             console.error('Erreur lors de la suppression du scan:', error);
-            this.showToast('Erreur lors de la suppression', 'error');
+            this.showToast(t('deletionError'), 'error');
         }
     }
 
@@ -313,7 +316,7 @@ class PreviewManager {
             if (mimeType === 'application/pdf') {
                 // Pour les PDF, copier le lien data
                 await navigator.clipboard.writeText(data);
-                this.showSuccess('Lien PDF copié dans le presse-papiers');
+                this.showSuccess(t('pdfCopied'));
             } else {
                 // Pour les images, essayer de copier l'image
                 const response = await fetch(data);
@@ -325,12 +328,12 @@ class PreviewManager {
                     })
                 ]);
                 
-                this.showSuccess('Image copiée dans le presse-papiers');
+                this.showSuccess(t('imageCopied'));
             }
             
         } catch (error) {
             console.error('❌ Erreur lors de la copie:', error);
-            this.showError('Erreur lors de la copie');
+            this.showError(t('copyError'));
         }
     }
 
@@ -376,10 +379,10 @@ class PreviewManager {
                 printWindow.document.close();
             }
             
-            this.showSuccess('Impression lancée');
+            this.showSuccess(t('printStarted'));
         } catch (error) {
             console.error('❌ Erreur lors de l\'impression:', error);
-            this.showError('Erreur lors de l\'impression');
+            this.showError(t('printError'));
         }
     }
 
@@ -428,7 +431,7 @@ class PreviewManager {
         if (this.navigationGroup) {
             const navigationTitle = this.navigationGroup.querySelector('h3');
             if (navigationTitle) {
-                navigationTitle.textContent = 'Navigation';
+                navigationTitle.textContent = t('navigationTitle');
             }
         }
         
@@ -456,7 +459,7 @@ class PreviewManager {
         if (this.navigationGroup) {
             const navigationTitle = this.navigationGroup.querySelector('h3');
             if (navigationTitle) {
-                navigationTitle.textContent = 'Aucun scan disponible';
+                navigationTitle.textContent = t('noScanAvailable');
             }
         }
     }

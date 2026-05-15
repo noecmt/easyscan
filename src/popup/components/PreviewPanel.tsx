@@ -1,4 +1,5 @@
 import type { ScanRecord } from '../../core/types'
+import { t } from '../../utils/i18n'
 
 interface Props {
   record: ScanRecord | null
@@ -16,7 +17,7 @@ export function PreviewPanel({ record, onCopy, onDownload, onOpenPreview }: Prop
     <div class="preview-panel">
       <div class="preview-container">
         {isPdf ? (
-          <div class="pdf-icon" onClick={onOpenPreview} title="Ouvrir l'aperçu">
+          <div class="pdf-icon" onClick={onOpenPreview} title={t('openPreview')}>
             📄 PDF
           </div>
         ) : (
@@ -24,15 +25,15 @@ export function PreviewPanel({ record, onCopy, onDownload, onOpenPreview }: Prop
             src={record.dataUrl}
             class="preview-image"
             onClick={onOpenPreview}
-            alt="Aperçu du scan"
+            alt={t('scanPreviewAlt')}
             style={{ cursor: 'pointer' }}
           />
         )}
       </div>
       <div class="download-actions">
-        <button onClick={onCopy} title="Copier">Copier</button>
-        <button onClick={onDownload} title="Télécharger">Sauvegarder</button>
-        <button onClick={onOpenPreview} title="Aperçu complet">Aperçu</button>
+        <button onClick={onCopy} title={t('copy')}>{t('copy')}</button>
+        <button onClick={onDownload} title={t('save')}>{t('save')}</button>
+        <button onClick={onOpenPreview} title={t('preview')}>{t('preview')}</button>
       </div>
     </div>
   )
