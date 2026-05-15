@@ -23,8 +23,8 @@ export function ScannerSelector({ scanners, activeId, onSelect, onDiscover, disc
             ))
         }
       </select>
-      <button onClick={onDiscover} disabled={discovering} class="icon-btn" title="Rechercher">
-        {discovering ? '⏳' : '🔍'}
+      <button onClick={onDiscover} disabled={discovering} class="icon-btn discover" title="Rechercher">
+        {discovering ? '…' : '🔍'}
       </button>
     </div>
   )

@@ -2,16 +2,17 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <title>Easy Scan — Settings</title>
+  <meta name="color-scheme" content="dark">
+  <title>Easy Scan — Paramètres</title>
   <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
   <div class="container options-container">
-    <h1>⚙️ Easy Scan — Settings</h1>
+    <h1>Easy Scan — Paramètres</h1>
 
     <!-- My Scanners -->
     <section class="options-section">
-      <h2>📡 My Scanners</h2>
+      <h2>Scanners</h2>
 
       <ul id="scanner-list"></ul>
 
@@ -47,7 +48,7 @@
 
     <!-- Default Settings -->
     <section class="options-section">
-      <h2>🎛️ Default Settings</h2>
+      <h2>Paramètres par défaut</h2>
 
       <div class="field">
         <label for="dpi">Resolution</label>
@@ -78,15 +79,15 @@
         </select>
       </div>
 
-      <button id="reset-btn" class="btn-secondary">Reset to defaults</button>
+      <button id="reset-btn" class="reset-button">Réinitialiser</button>
       <p id="settings-status" class="status"></p>
     </section>
 
     <!-- About -->
     <section class="options-section">
-      <h2>ℹ️ About</h2>
+      <h2>À propos</h2>
       <p>Easy Scan <span id="version"></span></p>
-      <p style="color:#666">Chrome extension for wireless scanning via eSCL/AirScan.</p>
+      <p class="about-desc">Extension Chrome pour scanner sans fil via eSCL/AirScan.</p>
     </section>
   </div>
 

@@ -143,6 +143,14 @@ export function App() {
     chrome.tabs.create({ url: chrome.runtime.getURL('src/preview/index.html') })
   }
 
+  const handleOpenSettings = () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL('src/options/index.html') })
+  }
+
+  const handleOpenHistory = () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL('src/preview/index.html') })
+  }
+
   const statusMessage =
     status === 'discovering' ? 'Recherche de scanners...' :
     status === 'scanning' ? 'Scan en cours...' :
@@ -153,8 +161,14 @@ export function App() {
   return (
     <div class="container">
       <div class="header">
-        <h1>Easy Scan</h1>
-        <button class="options-btn" onClick={() => chrome.runtime.openOptionsPage()} title="Options">⚙️</button>
+        <div class="header-brand">
+          <span class="header-icon" aria-hidden="true">&#x25A3;</span>
+          <h1>Easy Scan</h1>
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn" onClick={handleOpenHistory} title="Historique">&#x2630;</button>
+          <button class="icon-btn" onClick={handleOpenSettings} title="Paramètres">&#x2699;</button>
+        </div>
       </div>
       <section class="main-section">
         <ScannerSelector

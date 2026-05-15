@@ -30,9 +30,9 @@ export function PreviewPanel({ record, onCopy, onDownload, onOpenPreview }: Prop
         )}
       </div>
       <div class="download-actions">
-        <button onClick={onCopy} title="Copier">📋</button>
-        <button onClick={onDownload} title="Télécharger">💾</button>
-        <button onClick={onOpenPreview} title="Aperçu complet">👁️</button>
+        <button onClick={onCopy} title="Copier">Copier</button>
+        <button onClick={onDownload} title="Télécharger">Sauvegarder</button>
+        <button onClick={onOpenPreview} title="Aperçu complet">Aperçu</button>
       </div>
     </div>
   )
